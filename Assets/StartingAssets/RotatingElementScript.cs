@@ -13,7 +13,7 @@ public class RotatingElementScript : MonoBehaviour
     {
         while (true)
         {
-            transform.Rotate(Vector3.up * 0.25f);
+            transform.Rotate(Vector2.up, Space.World);
 
             yield return new WaitForEndOfFrame();
         }
