@@ -1,17 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.InputSystem; // if you have a PossessableObject, you need this line.
 
+
+// a sample class to show the Input Nexus system.
 public class SamplePossessableScript : PossessableObject
 {
     void Start()
     {
+        // we use persistentHook here to ensure that this is the "default"
+        // hooked object. It won't be removed until execution stops.
         PersistentHook();
 
         //Hook();
     }
 
+    // These are our functions that will do things with input.
     private void WithInputVector(InputAction.CallbackContext context)
     {
         if (context.performed)
@@ -57,9 +60,10 @@ public class SamplePossessableScript : PossessableObject
         }
     }
 
+    // how you implement the PossessableObject functions
     protected override void Hook()
     {
-        DesubscribeAll();
+        // DesubscribeAll(); might be used, but in most cases don't do this.
 
         INS.LateralBind += WithInputVector;
         INS.ButtonBind += WithButton;
@@ -77,7 +81,7 @@ public class SamplePossessableScript : PossessableObject
 
     protected override void PersistentHook()
     {
-        INS.EmptyBind += Hook;
+        INS.EmptyBind += Hook; // ensures something is bound, always.
     }
 
     protected override void FreePersistentHook()
