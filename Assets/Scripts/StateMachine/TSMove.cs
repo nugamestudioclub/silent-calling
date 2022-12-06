@@ -6,6 +6,9 @@ using UnityEngine.InputSystem;
 
 public class TSMove : TwoBaseState
 {
+
+    Transform transform;
+
     public TSMove(CharacterController c, Transform t, Action<TwoState> a) : base(c, t, a) { }
 
     public override void Handle2DMovement(InputAction.CallbackContext c)
@@ -43,12 +46,12 @@ public class TSMove : TwoBaseState
         if (_currentInput != Vector2.zero)
         {
             Vector3 v = new Vector3(_currentInput.x, 0, _currentInput.y);
-
             v = _cameraTransform.TransformDirection(v);
-
             v.y = 0f;
-            Debug.Log(v);
+
             _cc.SimpleMove(v.normalized * 5f);
+
+            transform.rotation = Quaternion.LookRotation(v);
         }
     }
 
@@ -59,6 +62,6 @@ public class TSMove : TwoBaseState
 
     protected override void StateStart()
     {
-        // pass
+        transform = _cc.transform;
     }
 }
