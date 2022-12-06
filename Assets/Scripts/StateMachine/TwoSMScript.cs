@@ -41,34 +41,64 @@ public class TwoSMScript : PossessableObject
     // Update is called once per frame
     void Update()
     {
+        // remember to use Time.deltaTime for unscaled movement
+    }
 
+    private void WithInputVector(InputAction.CallbackContext context)
+    {
+        current_state.Handle2DMovement(context);
+    }
+
+    private void WithButton(InputAction.CallbackContext context)
+    {
+        current_state.HandleButton1(context);
+    }
+
+    private void WithUseButton(InputAction.CallbackContext context)
+    {
+        current_state.HandleButton2(context);
+    }
+
+    private void WithBackButton(InputAction.CallbackContext context)
+    {
+        current_state.HandleButton3(context);
     }
 
     protected override void Free()
     {
-        throw new System.NotImplementedException();
+        INS.LateralBind -= WithInputVector;
+        INS.ButtonBind -= WithButton;
+        INS.UseBind -= WithUseButton;
+        INS.BackBind -= WithBackButton;
     }
 
     protected override void FreePersistentHook()
     {
-        throw new System.NotImplementedException();
+        INS.EmptyBind -= Hook;
     }
 
     protected override void Hook()
     {
-        throw new System.NotImplementedException();
+        INS.LateralBind += WithInputVector;
+        INS.ButtonBind += WithButton;
+        INS.UseBind += WithUseButton;
+        INS.BackBind += WithBackButton;
     }
 
     protected override void PersistentHook()
     {
-        throw new System.NotImplementedException();
+        INS.EmptyBind += Hook;
     }
 }
 
 public abstract class TwoBaseState
 {
+    protected abstract void StateStart();
+    protected abstract void StateEnd();
+
     public abstract void Handle2DMovement(InputAction.CallbackContext c);
     public abstract void HandleButton1(InputAction.CallbackContext c);
     public abstract void HandleButton2(InputAction.CallbackContext c);
     public abstract void HandleButton3(InputAction.CallbackContext c);
+    public abstract void InUpdate();
 }

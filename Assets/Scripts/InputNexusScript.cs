@@ -13,7 +13,7 @@ public class InputNexusScript : MonoBehaviour
     public delegate void EmptyBindDelegate();
 
     // instance of delegate declarations
-    public InputSystemDelegate LateralBind, ButtonBind, UseBind, BackBind;
+    public InputSystemDelegate LateralBind, ButtonBind, UseBind, BackBind, MouseDeltaBind, MouseClickBind;
     public EmptyBindDelegate EmptyBind;
 
     #region Input Component Hooks
@@ -64,6 +64,32 @@ public class InputNexusScript : MonoBehaviour
         if (BackBind != null)
         {
             BackBind.Invoke(context);
+
+            return;
+        }
+
+        OnEmptyBind();
+    }
+
+    // Called upon Mouse Delta (Vector2)
+    public void OnMouseDeltaBind(InputAction.CallbackContext context)
+    {
+        if (MouseDeltaBind != null)
+        {
+            MouseDeltaBind.Invoke(context);
+
+            return;
+        }
+
+        OnEmptyBind();
+    }
+
+    // Called upon left mouse click.
+    public void OnMouseClickBind(InputAction.CallbackContext context)
+    {
+        if (BackBind != null)
+        {
+            MouseClickBind.Invoke(context);
 
             return;
         }
@@ -136,10 +162,14 @@ public abstract class PossessableObject : MonoBehaviour
     // Only call this from OnDestroy. this is not to be called in OnDisable.
     protected abstract void FreePersistentHook();
 
+    /* not needed
+
     // wipes all Binds; used if the PossessableObject is selfish and takes all input
     protected void DesubscribeAll()
     {
         // this allows garbage collector to delete the contents of the delegates
         INS.LateralBind = INS.ButtonBind = INS.UseBind = INS.BackBind = null;
     }
+
+    */
 }
