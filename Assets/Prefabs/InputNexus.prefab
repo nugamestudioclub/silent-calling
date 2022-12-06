@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2245125424388372401}
   - component: {fileID: 2245125424388372403}
+  - component: {fileID: 971998986068659402}
   - component: {fileID: 2245125424388372400}
   m_Layer: 0
   m_Name: InputNexus
@@ -43,6 +44,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 079f00d736d3c4f6ab972bc0ffd0451a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &971998986068659402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2245125424388372414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8578cff99ad854200bd1062f3984316c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &2245125424388372400
