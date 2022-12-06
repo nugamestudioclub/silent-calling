@@ -5,6 +5,9 @@ using UnityEngine.InputSystem;
 
 public class TwoCameraScript : CameraScript
 {
+    Transform _lead;
+    const float _LERP = 0.0125f;
+    const float _ACCURACY = 0.95f;
 
     protected override void AnimateCamera()
     {
@@ -22,12 +25,9 @@ public class TwoCameraScript : CameraScript
         {
             Vector2 delta = context.ReadValue<Vector2>();
 
-            transform.RotateAround(_focusTarget.position, Vector3.up, delta.x * _SENSITIVITY * Time.deltaTime);
-            transform.RotateAround(_focusTarget.position, transform.right, delta.y * _SENSITIVITY  * Time.deltaTime * GetScale());
-            
-            transform.eulerAngles = transform.eulerAngles;
+            _lead.RotateAround(_focusTarget.position, Vector3.up, delta.x * _SENSITIVITY * Time.deltaTime);
+            _lead.RotateAround(_focusTarget.position, _lead.right, delta.y * _SENSITIVITY  * Time.deltaTime * GetScale());
 
-            transform.LookAt(_focusTarget);
         }
     }
 
@@ -62,6 +62,28 @@ public class TwoCameraScript : CameraScript
         GameObject g = GameObject.FindGameObjectWithTag("Player");
 
         SetFocusTarget(g.transform);
+
+        GameObject g2 = new GameObject();
+        g2.name = "Camera Lead";
+        _lead = g2.transform;
+        _lead.SetPositionAndRotation(transform.position, transform.rotation);
     }
-    
+
+
+    protected override void Update()
+    {
+        base.Update();
+
+        if (true) // not always, do Dist or Dot or something
+        {
+            transform.position = Vector3.Lerp
+                (transform.position,
+                _lead.position,
+                _LERP);
+
+            transform.rotation = Quaternion.Lerp(transform.rotation, _lead.rotation, _LERP);
+
+            transform.LookAt(_focusTarget);
+        }
+    }
 }

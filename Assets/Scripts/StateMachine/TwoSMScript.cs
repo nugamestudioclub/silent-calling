@@ -1,7 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
+
+public enum TwoState
+{
+    Idle,
+    Move
+}
 
 // StateMachine for Two
 public class TwoSMScript : PossessableObject
@@ -12,8 +20,29 @@ public class TwoSMScript : PossessableObject
     public delegate void StateChange(TwoBaseState state);
     public StateChange OnStateChanged;
 
-    public void ChangeState(TwoBaseState next)
+    Dictionary<TwoState, TwoBaseState> map;
+
+    void Awake()
     {
+        CharacterController c = GetComponent<CharacterController>();
+        TwoCameraScript tcs = Camera.main.GetComponent<TwoCameraScript>();
+
+        map = new Dictionary<TwoState, TwoBaseState>();
+        map.Add(TwoState.Idle, new TSIdle(c, tcs.transform, ChangeState));
+        map.Add(TwoState.Move, new TSMove(c, tcs.transform, ChangeState));
+
+        current_state = map[TwoState.Idle];
+    }
+
+    private void Start()
+    {
+        PersistentHook();
+    }
+
+    public void ChangeState(TwoState n)
+    {
+        TwoBaseState next = map[n];
+
         prior_state = current_state;
 
         OnStateChanged?.Invoke(next);
@@ -32,16 +61,10 @@ public class TwoSMScript : PossessableObject
         prior_state = cache;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
     void Update()
     {
-        // remember to use Time.deltaTime for unscaled movement
+        current_state.InUpdate();
     }
 
     private void WithInputVector(InputAction.CallbackContext context)
@@ -59,6 +82,9 @@ public class TwoSMScript : PossessableObject
         current_state.HandleButton2(context);
     }
 
+    // do i even need to have this?
+    // it might be nice to have an extra button for something
+    // maybe the UI will hook into the same UnityEvent that calls this key?
     private void WithBackButton(InputAction.CallbackContext context)
     {
         current_state.HandleButton3(context);
@@ -91,8 +117,33 @@ public class TwoSMScript : PossessableObject
     }
 }
 
+// naming convention:
+// TS(State Name), stands for Two State (state name)
+// e.g. TSIdle, TSMove, TSAirborne
 public abstract class TwoBaseState
 {
+    protected CharacterController _cc;
+    protected Transform _cameraTransform;
+    protected Action<TwoState> _ChangeStateAction;
+
+    protected Vector2 _currentInput;
+
+    public TwoBaseState(CharacterController c, Transform cam, Action<TwoState> a)
+    {
+        _cc = c;
+        _cameraTransform = cam;
+        _ChangeStateAction = a;
+
+        StateStart();
+    }
+
+    protected virtual void ChangeState(TwoState next)
+    {
+        StateEnd();
+
+        _ChangeStateAction.Invoke(next);
+    }
+
     protected abstract void StateStart();
     protected abstract void StateEnd();
 
