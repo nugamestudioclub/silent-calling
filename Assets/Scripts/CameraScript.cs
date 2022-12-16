@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public abstract class CameraScript : PossessableObject
 {
+    // hey dustin use this thing
 
     protected RaycastHit _info;
 

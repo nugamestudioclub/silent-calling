@@ -6,13 +6,16 @@ using UnityEngine.InputSystem;
 public class TwoCameraScript : CameraScript
 {
     Transform _lead;
-    const float _LERP = 0.05f;
+    const float _LERP = 0.25f;
     const float _ACCURACY = 0.95f;
     const float _HIGH_ANGLE = 50f;
     const float _LOW_ANGLE = 115f;
     const float _CORRECTION = 0.1f;
 
     Vector3 prior_pos = Vector3.zero;
+
+    // oh god im too lazy to comment this
+    // dont even wanna read it either
 
     protected override void AnimateCamera()
     {
@@ -131,14 +134,10 @@ public class TwoCameraScript : CameraScript
     {
         base.Update();
 
-        if (true) // not always, do Dist or Dot or something
-        {
-            transform.position = Vector3.Slerp
-                (transform.position,
-                _lead.position,
-                _LERP);
-
-            transform.rotation = Quaternion.Lerp(transform.rotation, _lead.rotation, _LERP);
-        }
+        // used to have this in a conditional, but SLerp and Quaterion Lerp are so cheap I dont care.
+        
+        transform.SetPositionAndRotation(
+            Vector3.Slerp(transform.position, _lead.position, _LERP), 
+            Quaternion.Lerp(transform.rotation, _lead.rotation, _LERP));
     }
 }

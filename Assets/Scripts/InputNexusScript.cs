@@ -13,8 +13,8 @@ public class InputNexusScript : MonoBehaviour
     public delegate void EmptyBindDelegate();
 
     // instance of delegate declarations
-    public InputSystemDelegate LateralBind, ButtonBind, UseBind, BackBind, MouseDeltaBind, MouseClickBind;
-    public EmptyBindDelegate EmptyBind;
+    public event InputSystemDelegate LateralBind, ButtonBind, UseBind, BackBind, MouseDeltaBind, MouseClickBind;
+    public event EmptyBindDelegate EmptyBind;
 
     #region Input Component Hooks
     // for all of these binds, if the delegate is empty, calls EmptyBind().
@@ -110,6 +110,8 @@ public class InputNexusScript : MonoBehaviour
     /// </summary>
     public void OnEmptyBind()
     {
+        LateralBind = ButtonBind = UseBind = BackBind = MouseDeltaBind = MouseClickBind = null;
+
         // this exists to let me know if the bind is empty
 #if UNITY_EDITOR
         if (EmptyBind != null)
@@ -164,15 +166,4 @@ public abstract class PossessableObject : MonoBehaviour
     // Frees the function from the persistent hook.
     // Only call this from OnDestroy. this is not to be called in OnDisable.
     protected abstract void FreePersistentHook();
-
-    /* not needed
-
-    // wipes all Binds; used if the PossessableObject is selfish and takes all input
-    protected void DesubscribeAll()
-    {
-        // this allows garbage collector to delete the contents of the delegates
-        INS.LateralBind = INS.ButtonBind = INS.UseBind = INS.BackBind = null;
-    }
-
-    */
 }
