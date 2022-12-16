@@ -134,6 +134,38 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: d62c871d-9816-4b45-be63-b3fa33008aa7
     m_ActionName: Controls/Back[/Keyboard/k]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2245125424388372403}
+        m_TargetAssemblyTypeName: InputNexusScript, Assembly-CSharp
+        m_MethodName: OnMouseDeltaBind
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 346977ce-ca79-4140-9685-da1027cab2c9
+    m_ActionName: Controls/Mouse[/Mouse/delta]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2245125424388372403}
+        m_TargetAssemblyTypeName: InputNexusScript, Assembly-CSharp
+        m_MethodName: OnMouseClickBind
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 1f5de724-913b-4cab-8e06-a33925ed22c4
+    m_ActionName: Controls/MouseClick[/Mouse/leftButton]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Controls

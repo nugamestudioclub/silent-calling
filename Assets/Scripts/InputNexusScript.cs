@@ -13,8 +13,8 @@ public class InputNexusScript : MonoBehaviour
     public delegate void EmptyBindDelegate();
 
     // instance of delegate declarations
-    public InputSystemDelegate LateralBind, ButtonBind, UseBind, BackBind;
-    public EmptyBindDelegate EmptyBind;
+    public event InputSystemDelegate LateralBind, ButtonBind, UseBind, BackBind, MouseDeltaBind, MouseClickBind;
+    public event EmptyBindDelegate EmptyBind;
 
     #region Input Component Hooks
     // for all of these binds, if the delegate is empty, calls EmptyBind().
@@ -70,6 +70,32 @@ public class InputNexusScript : MonoBehaviour
 
         OnEmptyBind();
     }
+
+    // Called upon Mouse Delta (Vector2)
+    public void OnMouseDeltaBind(InputAction.CallbackContext context)
+    {
+        if (MouseDeltaBind != null)
+        {
+            MouseDeltaBind.Invoke(context);
+
+            return;
+        }
+
+        OnEmptyBind();
+    }
+
+    // Called upon left mouse click.
+    public void OnMouseClickBind(InputAction.CallbackContext context)
+    {
+        if (BackBind != null)
+        {
+            MouseClickBind.Invoke(context);
+
+            return;
+        }
+
+        OnEmptyBind();
+    }
     #endregion
 
     /// <summary>
@@ -78,9 +104,14 @@ public class InputNexusScript : MonoBehaviour
     /// if this function does get called, that means that nothing is listening
     /// to the input, which is bad. OnEmptyBind calls a special invoke that
     /// is never emptied until the end of the program.
+    ///
+    /// FIX THIS, RIGHT NOW IF MULTIPLE THINGS ARE HOOKED INTO EMPTYBIND THEY
+    /// CAUSE A MEMORY LEAK BC THEY GET ADDED OVER AND OVER
     /// </summary>
     public void OnEmptyBind()
     {
+        LateralBind = ButtonBind = UseBind = BackBind = MouseDeltaBind = MouseClickBind = null;
+
         // this exists to let me know if the bind is empty
 #if UNITY_EDITOR
         if (EmptyBind != null)
@@ -135,11 +166,4 @@ public abstract class PossessableObject : MonoBehaviour
     // Frees the function from the persistent hook.
     // Only call this from OnDestroy. this is not to be called in OnDisable.
     protected abstract void FreePersistentHook();
-
-    // wipes all Binds; used if the PossessableObject is selfish and takes all input
-    protected void DesubscribeAll()
-    {
-        // this allows garbage collector to delete the contents of the delegates
-        INS.LateralBind = INS.ButtonBind = INS.UseBind = INS.BackBind = null;
-    }
 }
