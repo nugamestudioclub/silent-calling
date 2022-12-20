@@ -6,7 +6,10 @@ using UnityEngine.InputSystem;
 
 public class TSFalling : TwoBaseState
 {
-    public TSFalling(CharacterController c, Transform t, Action<TwoState> a) : base(c, t, a) { }
+    public TSFalling(CharacterController c, Transform t, Action<TwoState> a) : base(c, t, a) 
+    {
+        StateType = TwoState.Falling;
+    }
 
     // TODO: slower air movement???
 

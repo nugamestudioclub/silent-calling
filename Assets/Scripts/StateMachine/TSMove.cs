@@ -8,7 +8,14 @@ public class TSMove : TwoBaseState
 {
     float t = 0f;
 
-    public TSMove(CharacterController c, Transform t, Action<TwoState> a) : base(c, t, a) { }
+    // TODO
+    // Slide-state for when on an illegal slope and not moving
+    // Fix Airborne State transition when walking into an illegal slope
+
+    public TSMove(CharacterController c, Transform t, Action<TwoState> a) : base(c, t, a) 
+    {
+        StateType = TwoState.Move;
+    }
 
     public override void Handle2DMovement(InputAction.CallbackContext c)
     {
@@ -25,12 +32,6 @@ public class TSMove : TwoBaseState
 
             ChangeState(TwoState.Idle); // if no input, therefore idle.
         }
-    }
-
-    // returns true if we are on a slope with an angle greater than the slope limit.
-    bool OnIllegalSlope()
-    {
-        return !(Vector3.Angle(Vector3.up, r.normal) < slopeLimit);
     }
 
     public override void HandleButton1(InputAction.CallbackContext c)
@@ -56,14 +57,25 @@ public class TSMove : TwoBaseState
     // hoo boy
     protected override void ProcessMovement()
     {
-        Vector3 input_v = new Vector3(_currentInput.x, 0, _currentInput.y); // input vector
-        Vector3 v = _cameraTransform.TransformDirection(input_v); // align with camera
+        Vector3 v = new Vector3(_currentInput.x, 0, _currentInput.y); // input vector
+        v = _cameraTransform.TransformDirection(v); // re-orient input vector to Camera space
         v.y = 0f; // remove any y that comes from the alignment
+
+        // unsmoothened variant
+        // _cc.transform.rotation = Quaternion.LookRotation(v); // look in the direction of movement
+
+        // smoothened
+        // look in the direction of movement, but smoothly. Can result in intermittent angles if control
+        // is released before the Lerp completes
+        _cc.transform.rotation = Quaternion.Lerp( 
+            _cc.transform.rotation, 
+            Quaternion.LookRotation(v),
+            _ROTATION_LERP * Time.deltaTime);
 
         // re-orient dir vector to the normal of the slope so we dont bounce
         if (CastRay())
         {
-            Quaternion dir_rotation = Quaternion.FromToRotation(Vector3.up, r.normal); // Quat stuff
+            Quaternion dir_rotation = Quaternion.FromToRotation(Vector3.up, _raycastInfo.normal); // Quat stuff
 
             Vector3 v2 = dir_rotation * v; // reorient the vector
 
@@ -73,13 +85,14 @@ public class TSMove : TwoBaseState
         v.y += _yvelo; // add "gravity" and any rising "force" we add
         
         _cc.Move(_MOVE_SPEED * Time.deltaTime * v);
-
-        _cc.transform.rotation = Quaternion.LookRotation(input_v); // look in the direction of movement
     }
 
     public override void InUpdate()
     {
-        if (!_cc.isGrounded) // tick the coyote timer if we aren't on the ground
+        // tick the coyote timer if we aren't on the ground, but also if we aren't on an illegal slope
+        // The reason for the latter is bc isGrounded is false on an illegal slope, but we are grounded there.
+        // We just can't jump or move up the slope bc we aren't supposed to be on it.
+        if (!_cc.isGrounded && !OnIllegalSlope())
         {
             t++;
         }
@@ -102,28 +115,28 @@ public class TSMove : TwoBaseState
         // you have to touch the platform first
         // is this ignorable?
 
-        if (r.collider != null)
+        if (_raycastInfo.collider != null)
         {
-            onMovingPlatform = r.transform.CompareTag("MovingObject"); // hey everybody we on a moving plat now lol
+            _onMovingPlatform = _raycastInfo.transform.CompareTag("MovingObject"); // hey everybody we on a moving plat now lol
         }
 
-        if (onMovingPlatform) // see TSIdle
+        if (_onMovingPlatform) // see TSIdle
         {
-            moving_body = r.transform;
+            _movingBody = _raycastInfo.transform;
 
-            if (!_cc.transform.IsChildOf(moving_body))
+            if (!_cc.transform.IsChildOf(_movingBody))
             {
-                _cc.transform.SetParent(moving_body, true);
+                _cc.transform.SetParent(_movingBody, true);
             }
         }
 
         else
         {
-            if (moving_body != null)
+            if (_movingBody != null)
             {
-                moving_body.DetachChildren();
+                _movingBody.DetachChildren();
 
-                moving_body = null;
+                _movingBody = null;
             }
         }
 
@@ -145,7 +158,6 @@ public class TSMove : TwoBaseState
     {
         _yvelo = 0f;
         t = 0f;
-        slopeLimit = _cc.slopeLimit;
     }
 
     protected override void StateEnd()

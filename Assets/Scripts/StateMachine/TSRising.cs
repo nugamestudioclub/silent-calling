@@ -8,7 +8,10 @@ public class TSRising : TwoBaseState
 {
     float timeStarted;
 
-    public TSRising(CharacterController c, Transform t, Action<TwoState> a) : base(c, t, a){ }
+    public TSRising(CharacterController c, Transform t, Action<TwoState> a) : base(c, t, a)
+    {
+        StateType = TwoState.Rising;
+    }
 
     public override void Handle2DMovement(InputAction.CallbackContext c)
     {

@@ -50,9 +50,6 @@ public abstract class CameraScript : PossessableObject
 
     protected abstract void Start();
 
-    protected virtual void Update()
-    {
-        MaintainDistance();
-    }
+    protected abstract void Update();
 
 }

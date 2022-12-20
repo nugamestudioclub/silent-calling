@@ -7,10 +7,12 @@ public class TwoCameraScript : CameraScript
 {
     Transform _lead;
     const float _LERP = 0.25f;
-    const float _ACCURACY = 0.95f;
     const float _HIGH_ANGLE = 50f;
     const float _LOW_ANGLE = 115f;
     const float _CORRECTION = 0.1f;
+    const float _CHARACTER_HEIGHT = 2.3f; // not a great solution, but it works. // + Vector3.up * _CHARACTER_HEIGHT
+
+    const int _LAYER_MASK = ~(1 << 2); // look this up if you wanna know what this does :P
 
     Vector3 prior_pos = Vector3.zero;
 
@@ -26,7 +28,7 @@ public class TwoCameraScript : CameraScript
     {
         if (context.canceled)
         {
-            _lead.position = _focusTarget.position - _DISTANCE * _focusTarget.forward + Vector3.up * 1.5f;
+            _lead.position = GetAdjustedPosition() - _DISTANCE * _focusTarget.forward + Vector3.up * 1.5f;
             _lead.LookAt(_focusTarget);
         }
     }
@@ -37,9 +39,11 @@ public class TwoCameraScript : CameraScript
         {
             Vector2 delta = context.ReadValue<Vector2>();
 
-            _lead.RotateAround(_focusTarget.position, Vector3.up, delta.x * _SENSITIVITY * Time.deltaTime);
+            Vector3 cache_pos = GetAdjustedPosition();
 
-            float angle = Vector3.Angle(Vector3.up, _lead.position - _focusTarget.position);
+            _lead.RotateAround(cache_pos, Vector3.up, delta.x * _SENSITIVITY * Time.deltaTime);
+
+            float angle = Vector3.Angle(Vector3.up, _lead.position - cache_pos);
 
             if (angle < _HIGH_ANGLE || angle > _LOW_ANGLE)
             {
@@ -51,9 +55,8 @@ public class TwoCameraScript : CameraScript
 
             else
             {
-                _lead.RotateAround(_focusTarget.position, _lead.right, delta.y * _SENSITIVITY * Time.deltaTime); // * GetScale()
+                _lead.RotateAround(cache_pos, _lead.right, delta.y * _SENSITIVITY * Time.deltaTime); // * GetScale()
             }
-
         }
     }
 
@@ -81,33 +84,40 @@ public class TwoCameraScript : CameraScript
         transform.LookAt(_focusTarget);
     }
 
+    Vector3 GetAdjustedPosition()
+    {
+        return _focusTarget.position + Vector3.up * _CHARACTER_HEIGHT;
+    }
+
     protected override void MaintainDistance()
     {
-        _lead.position += _focusTarget.position - prior_pos; // hacky solution but it works
+        Vector3 cache_pos = GetAdjustedPosition();
 
-        prior_pos = _focusTarget.position;
+        _lead.position += cache_pos - prior_pos; // hacky solution but it works
+                                                 // moves the lead by the delta of the focus, to keep it aligned.
+        prior_pos = cache_pos;
 
 
         Vector3 t_pos = _lead.position;
 
-        float dist = Vector3.Distance(_lead.position, _focusTarget.position);
+        float dist = Vector3.Distance(_lead.position, cache_pos);
 
-        if (Physics.Raycast(_focusTarget.position, t_pos - _focusTarget.position, out _info, _DISTANCE)) // if obstructed
+        if (Physics.Raycast(cache_pos, t_pos - cache_pos, out _info, _DISTANCE, _LAYER_MASK)) // if obstructed
         {
             _lead.position = Vector3.Lerp(t_pos, _info.point, 0.5f);
         }
-
+        
         else if (dist < _DISTANCE) // else if too close
         {
             _lead.position = Vector3.Lerp(t_pos, t_pos - _lead.forward * _DISTANCE, _MDIST_LERP * 4f);
         }
-
+        
         else // else (too far)
         {
-            _lead.position = Vector3.Lerp(t_pos, _focusTarget.position - _lead.forward * _DISTANCE, _MDIST_LERP * Mathf.Clamp(dist, 0f, 40f));
+            _lead.position = Vector3.Lerp(t_pos, cache_pos - _lead.forward * _DISTANCE, _MDIST_LERP * Mathf.Clamp(dist, 0f, 40f));
         }
 
-        _lead.LookAt(_focusTarget);
+        _lead.LookAt(GetAdjustedPosition());
     }
 
     protected override void Start()
@@ -132,10 +142,11 @@ public class TwoCameraScript : CameraScript
 
     protected override void Update()
     {
-        base.Update();
+        MaintainDistance(); // could lighten the calls to this by hooking it into an OnMoved/OnCameraMoved event but whatevs
+                            // I mean I could listen to "if the prior_pos Delta is big enough or camera moved, fire the event"
+                            // seems like a bit much tho
 
         // used to have this in a conditional, but SLerp and Quaterion Lerp are so cheap I dont care.
-        
         transform.SetPositionAndRotation(
             Vector3.Slerp(transform.position, _lead.position, _LERP), 
             Quaternion.Lerp(transform.rotation, _lead.rotation, _LERP));

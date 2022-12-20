@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -156,12 +156,15 @@ public class TwoSMScript : PossessableObject
 public abstract class TwoBaseState
 {
     protected const float _GRAVITY = -9.81f; // bruh
+    protected const int _LAYER_MASK = ~(1 << 2); // haha see TwoCameraScript hehe
     protected const float _MOVE_SPEED = 5f; // bruh
-    protected const float _JUMP_FORCE = 10f; // bruh
+    protected const float _JUMP_FORCE = 15f; // bruh
     protected const float _FALL_MULTIPLIER = 4f; // how much faster the fall should be than the rising portion of a jump
     protected const float _DECEL = 0.04f; // how fast the rise flattens out
     protected const float _MAX_FALL_SPEED = -45f; // bruh
     protected const float _COYOTE_TIME = 30f; // how long can we not be on something and still be able to jump?
+    protected const float _ROTATION_LERP = 0.05f * 150f; // how quickly does the player smoothly rotate?
+                                                         // this is affected by deltaTime, so it needs to be big.
 
     protected CharacterController _cc;
     protected Transform _cameraTransform;
@@ -169,16 +172,20 @@ public abstract class TwoBaseState
 
     protected Vector2 _currentInput; // bruh
     protected float _yvelo = 0f; // stores the current yvelo bc CharacterController can't do that
-    protected float slopeLimit; // internally stores the CharacterController slope limit so i dont have to do _cc.slopeLimit each time
-    protected RaycastHit r; // stores Raycast info that Idle and Move need
-    protected Transform moving_body; // both Idle and Move need to keep track of what moving object they are on
-    protected bool onMovingPlatform; // both Idle and Move needed this, so I put it here.
+    protected float _slopeLimit; // internally stores the CharacterController slope limit so i dont have to do _cc.slopeLimit each time
+    protected RaycastHit _raycastInfo; // stores Raycast info that Idle and Move need
+    protected Transform _movingBody; // both Idle and Move need to keep track of what moving object they are on
+    protected bool _onMovingPlatform; // both Idle and Move needed this, so I put it here.
+
+    public TwoState StateType;
 
     public TwoBaseState(CharacterController c, Transform cam, Action<TwoState> a)
     {
         _cc = c;
         _cameraTransform = cam;
         _ChangeStateAction = a;
+
+        _slopeLimit = _cc.slopeLimit;
 
         StateStart();
     }
@@ -193,13 +200,20 @@ public abstract class TwoBaseState
     }
 
     // cast a SphereRay (ooh so fancy) downwards to get information.
+    // > not so fancy anymore, sphereRay is whack
     protected bool CastRay()
     {
         Ray ray = new Ray(_cc.transform.position, Vector3.down); // our downwards Ray
 
-        return Physics.SphereCast(ray, _cc.radius, out r, 2f);
+        //return Physics.SphereCast(ray, _cc.radius, out _raycastInfo, 2f); // this is the weirdest thing
 
-        //return Physics.Raycast(ray, out r, 2f); Old and outdated, but keep just in case
+        return Physics.Raycast(ray, out _raycastInfo, 2f, _LAYER_MASK);
+    }
+
+    // returns true if we are on a slope with an angle greater than the slope limit.
+    protected bool OnIllegalSlope()
+    {
+        return !(Vector3.Angle(Vector3.up, _raycastInfo.normal) < _slopeLimit);
     }
 
     // public getters for the UpdateState function only
@@ -222,6 +236,10 @@ public abstract class TwoBaseState
         _yvelo = b.GetYVelo();
         _currentInput = b.GetInputVector();
     }
+
+    // TODO
+    // coalesce all the changes made to ProcessMovement into one so we don't have these
+    // weird differing definitions between Move/Idle and Rising/Falling.
 
     /// <summary>
     /// Applies the current movement input vector to the character, multiplied by MOVESPEED.
