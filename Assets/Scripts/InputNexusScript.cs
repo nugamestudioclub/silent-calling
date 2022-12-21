@@ -13,6 +13,7 @@ public class InputNexusScript : MonoBehaviour
     public delegate void EmptyBindDelegate();
 
     // instance of delegate declarations
+    // these are made into Events so that other classes cannot reset their values.
     public event InputSystemDelegate LateralBind, ButtonBind, UseBind, BackBind, MouseDeltaBind, MouseClickBind;
     public event EmptyBindDelegate EmptyBind;
 

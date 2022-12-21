@@ -177,7 +177,7 @@ public abstract class TwoBaseState
     protected Transform _movingBody; // both Idle and Move need to keep track of what moving object they are on
     protected bool _onMovingPlatform; // both Idle and Move needed this, so I put it here.
 
-    public TwoState StateType;
+    public TwoState StateType; // used for the Animator hook.
 
     public TwoBaseState(CharacterController c, Transform cam, Action<TwoState> a)
     {
@@ -262,7 +262,16 @@ public abstract class TwoBaseState
 
         if (v != Vector3.zero) // cant have a zero rotation Quaternion
         {
-            _cc.transform.rotation = Quaternion.LookRotation(v);
+            // unsmoothened variant
+            // _cc.transform.rotation = Quaternion.LookRotation(v); // look in the direction of movement
+
+            // smoothened
+            // look in the direction of movement, but smoothly. Can result in intermittent angles if control
+            // is released before the Lerp completes
+            _cc.transform.rotation = Quaternion.Lerp(
+                _cc.transform.rotation,
+                Quaternion.LookRotation(v),
+                _ROTATION_LERP * Time.deltaTime);
         }
     }
 
