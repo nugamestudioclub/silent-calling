@@ -20,6 +20,8 @@ public class TwoCameraScript : CameraScript
 
     Vector3 prior_pos = Vector3.zero;
 
+    // WHY IS THERE LAG
+    // bruh
 
     protected override void AnimateCamera()
     {
@@ -94,8 +96,10 @@ public class TwoCameraScript : CameraScript
         //--- This block ensures the lead always moves with the player
         Vector3 cache_pos = GetAdjustedPosition();
 
+
         _lead.position += cache_pos - prior_pos; // hacky solution but it works
-                                                 // moves the lead by the delta of the focus, to keep it aligned.
+                                                   // moves the lead by the delta of the focus, to keep it aligned.
+
         prior_pos = cache_pos;
         //---
 
@@ -143,10 +147,10 @@ public class TwoCameraScript : CameraScript
 
         prior_pos = g.transform.position;
     }
-
-
+    
     protected override void Update()
     {
+
         MaintainDistance(); // could lighten the calls to this by hooking it into an OnMoved/OnCameraMoved event but whatevs
                             // I mean I could listen to "if the prior_pos Delta is big enough or camera moved, fire the event"
                             // seems like a bit much tho
@@ -159,4 +163,5 @@ public class TwoCameraScript : CameraScript
             Vector3.Slerp(transform.position, _lead.position, _LERP), 
             Quaternion.Lerp(transform.rotation, _lead.rotation, _LERP));
     }
+ 
 }
