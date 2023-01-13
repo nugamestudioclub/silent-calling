@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class TwoAnimHandlerScript : MonoBehaviour
 {
@@ -6,6 +7,11 @@ public class TwoAnimHandlerScript : MonoBehaviour
 
     Animator _animator; // cache the animator, because GetComponent is expensive
     int _parameterHash; // hash the string name of the parameter, because int search is faster than string search
+    int _blendHash;
+
+    IEnumerator _coroutineInstance;
+
+    float _RATE = 0.125f;
 
     int _currentState = 0; // the variable that stores the value of CurrentState
     private int CurrentState // the "visible" variable that we access to change the current state
@@ -24,6 +30,7 @@ public class TwoAnimHandlerScript : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _parameterHash = Animator.StringToHash("State"); // getting the hash
+        _blendHash = Animator.StringToHash("Blend");
 
         CurrentState = 0;
     }
@@ -45,7 +52,38 @@ public class TwoAnimHandlerScript : MonoBehaviour
 
     void UpdateAnimator(TwoBaseState t)
     {
-        CurrentState = (int)t.StateType; // yup, that's the entire script for movement animation lmao
+        CurrentState = (int)t.StateType;
+
+        if (t.StateType == TwoState.Running)
+        {
+            _coroutineInstance = AnimateBlendTree();
+            StartCoroutine(_coroutineInstance);
+        }
+
+        else if (_coroutineInstance != null)
+        {
+            StopCoroutine(_coroutineInstance);
+            SetBlend(0f);
+        }
+    }
+
+    IEnumerator AnimateBlendTree()
+    {
+        float v = 0f;
+
+        while (v < 0.9f)
+        {
+            v = Mathf.Lerp(v, 1f, _RATE);
+
+            SetBlend(v);
+
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
+    void SetBlend(float value)
+    {
+        _animator.SetFloat(_blendHash, value);
     }
 
 }

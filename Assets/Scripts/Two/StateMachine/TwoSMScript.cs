@@ -9,7 +9,8 @@ public enum TwoState
     Idle,
     Move,
     Rising,
-    Falling
+    Falling,
+    Running
 }
 
 // StateMachine for Two
@@ -39,6 +40,7 @@ public class TwoSMScript : PossessableObject
         map.Add(TwoState.Move, new TSMove(c, tcs.transform, ChangeStateFunc));
         map.Add(TwoState.Falling, new TSFalling(c, tcs.transform, ChangeStateFunc));
         map.Add(TwoState.Rising, new TSRising(c, tcs.transform, ChangeStateFunc));
+        map.Add(TwoState.Running, new TSRun(c, tcs.transform, ChangeStateFunc));
 
         // Initial value is Idle, because obviously.
         current_state = map[TwoState.Idle];
@@ -158,6 +160,7 @@ public abstract class TwoBaseState
     protected const float _GRAVITY = -9.81f; // bruh
     protected const int _LAYER_MASK = ~(1 << 2); // haha see TwoCameraScript hehe
     protected const float _MOVE_SPEED = 5f; // bruh
+    protected const float _RUN_SPEED_MULTIPLIER = 3f; // bruh
     protected const float _JUMP_FORCE = 15f; // bruh
     protected const float _FALL_MULTIPLIER = 4f; // how much faster the fall should be than the rising portion of a jump
     protected const float _DECEL = 0.04f; // how fast the rise flattens out

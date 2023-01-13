@@ -51,7 +51,10 @@ public class TSMove : TwoBaseState
 
     public override void HandleButton3(InputAction.CallbackContext c)
     {
-        Debug.Log("extra");
+        if (c.started)
+        {
+            ChangeState(TwoState.Running);
+        }
     }
 
     // hoo boy

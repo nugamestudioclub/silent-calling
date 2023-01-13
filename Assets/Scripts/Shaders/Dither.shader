@@ -96,6 +96,8 @@ Shader "Hidden/Dither" {
                 // makes things a bit more red
                 output.r = clamp(output.r * (1 + (1 - output.r)), 0.0f, 1.0f);
 
+
+                
                 return output;
             }
             ENDCG
