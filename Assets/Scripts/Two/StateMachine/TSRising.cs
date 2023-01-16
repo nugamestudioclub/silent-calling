@@ -4,46 +4,14 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class TSRising : TwoBaseState
+public class TSRising : TSBaseAirborneState
 {
     float timeStarted;
 
-    public TSRising(CharacterController c, Transform t, Action<TwoState> a) : base(c, t, a)
+    public TSRising(CharacterController c, Transform t, Action<TwoState> a, Action<Vector3, float, bool> f) : base(c, t, a, f)
     {
         StateType = TwoState.Rising;
     }
-
-    public override void Handle2DMovement(InputAction.CallbackContext c)
-    {
-        if (c.performed)
-        {
-            _currentInput = c.ReadValue<Vector2>();
-        }
-
-        else if (c.canceled)
-        {
-            _currentInput = Vector2.zero;
-        }
-    }
-
-    public override void HandleButton1(InputAction.CallbackContext c)
-    {
-        // pass
-    }
-    
-    public override void HandleButton2(InputAction.CallbackContext c)
-    {
-        // pass
-    }
-
-    public override void HandleButton3(InputAction.CallbackContext c)
-    {
-        if (c.canceled)
-        {
-            _running = false;
-        }
-    }
-    
 
     public override void PhysicsProcess()
     {
@@ -58,25 +26,13 @@ public class TSRising : TwoBaseState
             return;
         }
 
-        timeStarted += timeStarted * _DECEL * Time.deltaTime * 25f; // see TwoSMScript
+        timeStarted += timeStarted * _DECEL * Time.deltaTime * 50f; // see TwoSMScript
 
         ProcessMovement();
-    }
-
-    public override void UpdateState(TwoBaseState b)
-    {
-        base.UpdateState(b);
-
-        _running = b.IsRunning();
     }
 
     public override void StateStart()
     {
         timeStarted = 1f;
-    }
-
-    protected override void StateEnd()
-    {
-        // pass
     }
 }

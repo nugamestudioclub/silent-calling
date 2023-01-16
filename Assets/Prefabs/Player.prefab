@@ -4893,6 +4893,7 @@ GameObject:
   - component: {fileID: 4380432675558449071}
   - component: {fileID: 7556342766853364650}
   - component: {fileID: 7654997884065277525}
+  - component: {fileID: 6673428780393523378}
   m_Layer: 2
   m_Name: Player
   m_TagString: Player
@@ -4988,7 +4989,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4380432675558449066}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1be8647e91f2ec14abead76de2659edd, type: 3}
   m_Name: 
@@ -4996,6 +4997,18 @@ MonoBehaviour:
   OnLand: {fileID: 8823845735494937583}
   OnRun: {fileID: 6322331780413700994}
   OnJump: {fileID: 6538620432826970384}
+--- !u!114 &6673428780393523378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4380432675558449066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80bdbd52bdf17c344b82016ae73477e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4527048946026944507
 GameObject:
   m_ObjectHideFlags: 0
@@ -5022,7 +5035,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4527048946026944507}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5037,14 +5050,14 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4527048946026944507}
   serializedVersion: 8
-  lengthInSec: 1
+  lengthInSec: 30
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 0
   useUnscaledTime: 0

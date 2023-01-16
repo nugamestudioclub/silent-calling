@@ -29,6 +29,7 @@ public class TwoSMScript : PossessableObject
     {
         CharacterController c = GetComponent<CharacterController>();
         TwoCameraScript tcs = Camera.main.GetComponent<TwoCameraScript>();
+        CharacterControllerForceScript ccfs = GetComponent<CharacterControllerForceScript>();
 
         // use a HashMap to store all the states so I can avoid an icky Factory Pattern
         // seriously what is so great about those, I don't get it.
@@ -38,8 +39,8 @@ public class TwoSMScript : PossessableObject
         map = new Dictionary<TwoState, TwoBaseState>();
         map.Add(TwoState.Idle, new TSIdle(c, tcs.transform, ChangeStateFunc));
         map.Add(TwoState.Move, new TSMove(c, tcs.transform, ChangeStateFunc));
-        map.Add(TwoState.Falling, new TSFalling(c, tcs.transform, ChangeStateFunc));
-        map.Add(TwoState.Rising, new TSRising(c, tcs.transform, ChangeStateFunc));
+        map.Add(TwoState.Falling, new TSFalling(c, tcs.transform, ChangeStateFunc, ccfs.AddImpact));
+        map.Add(TwoState.Rising, new TSRising(c, tcs.transform, ChangeStateFunc, ccfs.AddImpact));
         map.Add(TwoState.Running, new TSRun(c, tcs.transform, ChangeStateFunc));
 
         // Initial value is Idle, because obviously.
@@ -65,6 +66,8 @@ public class TwoSMScript : PossessableObject
         OnStateChanged?.Invoke(next);
 
         current_state = next;
+
+        Debug.Log("State: " + next.StateType);
 
         current_state.UpdateState(prior_state);
 
@@ -165,9 +168,11 @@ public abstract class TwoBaseState
     protected const float _FALL_MULTIPLIER = 4f; // how much faster the fall should be than the rising portion of a jump
     protected const float _DECEL = 0.04f; // how fast the rise flattens out
     protected const float _MAX_FALL_SPEED = -45f; // bruh
-    protected const float _COYOTE_TIME = 30f; // how long can we not be on something and still be able to jump?
+    protected const float _COYOTE_TIME = 10f; // how long can we not be on something and still be able to jump?
     protected const float _ROTATION_LERP = 0.05f * 150f; // how quickly does the player smoothly rotate?
                                                          // this is affected by deltaTime, so it needs to be big.
+    protected const float _WALLKICK_FORCE = 10f;
+    protected const float _AIRJUMP_DRAG = 2.75f;
 
     protected CharacterController _cc;
     protected Transform _cameraTransform;
