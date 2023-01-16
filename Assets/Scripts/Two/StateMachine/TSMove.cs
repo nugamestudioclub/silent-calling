@@ -53,7 +53,7 @@ public class TSMove : TwoBaseState
     {
         if (c.started)
         {
-            ChangeState(TwoState.Running);
+            ChangeState(TwoState.Running); // Running State sets _running to true, so we don't need to do that here
         }
     }
 
@@ -90,7 +90,7 @@ public class TSMove : TwoBaseState
         _cc.Move(_MOVE_SPEED * Time.deltaTime * v);
     }
 
-    public override void InUpdate()
+    public override void PhysicsProcess()
     {
         // tick the coyote timer if we aren't on the ground, but also if we aren't on an illegal slope
         // The reason for the latter is bc isGrounded is false on an illegal slope, but we are grounded there.

@@ -38,13 +38,18 @@ public class TSRising : TwoBaseState
 
     public override void HandleButton3(InputAction.CallbackContext c)
     {
-        // pass
+        if (c.canceled)
+        {
+            _running = false;
+        }
     }
+    
 
-    public override void InUpdate()
+    public override void PhysicsProcess()
     {
-        _yvelo += _GRAVITY * Time.deltaTime * (1 + timeStarted); // "exponentially" increase the gravity so
-                                                                 // we fall faster. This feels better to use.
+        _yvelo += _GRAVITY * Time.deltaTime * timeStarted; // "exponentially" increase the gravity so
+                                                // we fall faster. This feels better to use. MAKE SURE THIS IS UNSCALED WITH FRAMERATE
+                                                // deltaTime is done in ProcessMovement
 
         if (_yvelo < 0f)
         {
@@ -53,14 +58,21 @@ public class TSRising : TwoBaseState
             return;
         }
 
-        timeStarted += _DECEL; // see TwoSMScript
+        timeStarted += timeStarted * _DECEL * Time.deltaTime * 25f; // see TwoSMScript
 
         ProcessMovement();
     }
 
+    public override void UpdateState(TwoBaseState b)
+    {
+        base.UpdateState(b);
+
+        _running = b.IsRunning();
+    }
+
     public override void StateStart()
     {
-        timeStarted = 0f;
+        timeStarted = 1f;
     }
 
     protected override void StateEnd()

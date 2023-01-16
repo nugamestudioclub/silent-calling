@@ -94,7 +94,7 @@ public class TwoSMScript : PossessableObject
     // All these functions just hook the current state's Handles into the callbacks.
     void Update()
     {
-        current_state.InUpdate();
+        current_state.PhysicsProcess();
     }
 
     private void WithInputVector(InputAction.CallbackContext context)
@@ -181,6 +181,9 @@ public abstract class TwoBaseState
     protected bool _onMovingPlatform; // both Idle and Move needed this, so I put it here.
 
     public TwoState StateType; // used for the Animator hook.
+    public TwoState PastState;
+
+    protected bool _running = false; // to be removed when refactored
 
     public TwoBaseState(CharacterController c, Transform cam, Action<TwoState> a)
     {
@@ -198,6 +201,8 @@ public abstract class TwoBaseState
     protected virtual void ChangeState(TwoState next)
     {
         StateEnd();
+
+        PastState = StateType;
 
         _ChangeStateAction.Invoke(next);
     }
@@ -228,6 +233,10 @@ public abstract class TwoBaseState
     {
         return _yvelo;
     }
+    public bool IsRunning()
+    {
+        return _running;
+    }
 
     /// <summary>
     /// Given the previous state, updates the current yvelo and input to those
@@ -255,9 +264,11 @@ public abstract class TwoBaseState
         Vector3 v = new Vector3(_currentInput.x, 0, _currentInput.y);
         v = _cameraTransform.TransformDirection(v); // align correctly with camera view
 
-        v.x *= _MOVE_SPEED;
+        float val = _running ? _RUN_SPEED_MULTIPLIER * _MOVE_SPEED: _MOVE_SPEED;
+
+        v.x *= val;
         v.y = _yvelo; // assign the yvelo
-        v.z *= _MOVE_SPEED;
+        v.z *= val;
 
         _cc.Move(v * Time.deltaTime);
 
@@ -283,7 +294,7 @@ public abstract class TwoBaseState
     public abstract void HandleButton1(InputAction.CallbackContext c);
     public abstract void HandleButton2(InputAction.CallbackContext c);
     public abstract void HandleButton3(InputAction.CallbackContext c);
-    public abstract void InUpdate();
+    public abstract void PhysicsProcess();
     public abstract void StateStart();
     protected abstract void StateEnd();
 }

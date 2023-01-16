@@ -18,6 +18,8 @@ public class TSRun : TSMove
         if (c.canceled)
         {
             ChangeState(TwoState.Move);
+
+            _running = false;
         }
     }
 
@@ -51,5 +53,10 @@ public class TSRun : TSMove
         v.y += _yvelo; // add "gravity" and any rising "force" we add
 
         _cc.Move(_MOVE_SPEED * Time.deltaTime * v * _RUN_SPEED_MULTIPLIER);
+    }
+
+    public override void StateStart()
+    {
+        _running = true;
     }
 }

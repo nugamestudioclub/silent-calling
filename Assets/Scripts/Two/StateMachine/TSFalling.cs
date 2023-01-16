@@ -38,14 +38,17 @@ public class TSFalling : TwoBaseState
 
     public override void HandleButton3(InputAction.CallbackContext c)
     {
-        // pass
+        if (c.canceled)
+        {
+            _running = false;
+        }
     }
 
-    public override void InUpdate()
+    public override void PhysicsProcess()
     {
         // sets the yvelo to either Max Fall Speed, or that monstrosity.
         // lol it's not even that bad, just adding a bit of gravity + increasing it by a multiplier.
-        _yvelo = Mathf.Max(_yvelo + _FALL_MULTIPLIER * _GRAVITY * Time.deltaTime, _MAX_FALL_SPEED); 
+        _yvelo = Mathf.Max(_yvelo + _FALL_MULTIPLIER * _GRAVITY * Time.deltaTime, _MAX_FALL_SPEED);  // deltaTime is already done in ProcessMovement
 
         if (_cc.isGrounded)
         {
@@ -56,6 +59,13 @@ public class TSFalling : TwoBaseState
         }
 
         ProcessMovement();
+    }
+
+    public override void UpdateState(TwoBaseState b)
+    {
+        base.UpdateState(b);
+
+        _running = b.IsRunning();
     }
 
     public override void StateStart()

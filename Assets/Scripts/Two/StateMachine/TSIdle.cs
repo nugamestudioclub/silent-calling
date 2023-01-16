@@ -40,7 +40,7 @@ public class TSIdle : TwoBaseState
         Debug.Log("extra");
     }
 
-    public override void InUpdate()
+    public override void PhysicsProcess()
     {
         if (CastRay()) // get Ray info
         {
