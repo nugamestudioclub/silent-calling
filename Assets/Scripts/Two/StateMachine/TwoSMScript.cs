@@ -275,7 +275,7 @@ public abstract class TwoBaseState
         v.y = _yvelo; // assign the yvelo
         v.z *= val;
 
-        _cc.Move(v * Time.deltaTime);
+        _cc.Move(v);//(v * Time.deltaTime);
 
         v.y = 0f; // we only want a rotation in the XZ plane
 
