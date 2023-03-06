@@ -87,7 +87,7 @@ public class TSMove : TwoBaseState
 
         v.y += _yvelo; // add "gravity" and any rising "force" we add
         
-        _cc.Move(_MOVE_SPEED * Time.deltaTime * v);
+        _cc.Move(_MOVE_SPEED * Time.deltaTime * v); // keep this deltaTime. it matters.
     }
 
     public override void PhysicsProcess()

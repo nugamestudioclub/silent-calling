@@ -50,7 +50,7 @@ Shader "Hidden/Dither" {
                 return float(bayer2[(uv.x % 2) + (uv.y % 2) * 2]) * (1.0f / 4.0f) - 0.5f;
             }
 
-             static const int bayer4[4 * 4] = {
+            static const int bayer4[4 * 4] = {
                 0, 8, 2, 10,
                 12, 4, 14, 6,
                 3, 11, 1, 9,
@@ -58,7 +58,7 @@ Shader "Hidden/Dither" {
             };
 
             float GetBayer4(float2 uv) {
-                return float(bayer4[(uv.x % 4) + (uv.y % 4) * 4]) * (1.0f / 16.0f) - 0.5f;
+                return float(bayer4[(uv.x % 4) + (uv.y % 4) * 4]) * (1.0 / 16.0) - 0.5;
             }
 
             static const int bayer8[8 * 8] = {
@@ -89,14 +89,19 @@ Shader "Hidden/Dither" {
 
                 float4 output = col + _Spread * GetBayer4(float2(x,y));
 
-                output.r = floor((_RedColorCount - 1.0f) * output.r + 0.5) / (_RedColorCount - 1.0f);
-                output.g = floor((_GreenColorCount - 1.0f) * output.g + 0.5) / (_GreenColorCount - 1.0f);
-                output.b = floor((_BlueColorCount - 1.0f) * output.b + 0.5) / (_BlueColorCount - 1.0f);
+                output.r = floor((_RedColorCount - 1.0) * output.r + 0.5) / (_RedColorCount - 1.0);
+                output.g = floor((_GreenColorCount - 1.0) * output.g + 0.5) / (_GreenColorCount - 1.0);
+                output.b = floor((_BlueColorCount - 1.0) * output.b + 0.5) / (_BlueColorCount - 1.0);
 
                 // makes things a bit more red
-                output.r = clamp(output.r * (1 + (1 - output.r)), 0.0f, 1.0f);
+                output.r = clamp(output.r * (1 + (1 - output.r)), 0.0, 1.0);
 
-
+                // Bug time
+                // it's clear to me that the reason why this stuff is breaking is because whenever you
+                // change the rendering window size, some pixels bug out. I think this is because
+                // the MainText TexelSize.z/.w multiplied by the uv produces some weird integers that might
+                // or might not fuck stuff up considering this algo relies on exact ints.
+                // how to solve this, idk. i need to make the numbers match a 16:9 ratio.
                 
                 return output;
             }

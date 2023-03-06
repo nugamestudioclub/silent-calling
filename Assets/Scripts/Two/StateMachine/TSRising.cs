@@ -16,9 +16,9 @@ public class TSRising : TSBaseAirborneState
     public override void PhysicsProcess()
     {
         _yvelo += _GRAVITY * Time.deltaTime * timeStarted; // "exponentially" increase the gravity so
-                                                // we fall faster. This feels better to use. MAKE SURE THIS IS UNSCALED WITH FRAMERATE
-                                                // deltaTime is done in ProcessMovement
-
+                                                           // we fall faster. This feels better to use. MAKE SURE THIS IS UNSCALED WITH FRAMERATE
+                                                           // deltaTime is done in ProcessMovement
+        //Debug.Log(_yvelo);
         if (_yvelo < 0f)
         {
             ChangeState(TwoState.Falling);
