@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 public class TwoCameraScript : CameraScript
 {
     Transform _lead;
-    const float _LERP = 0.25f; // how fast does the camera lerp towards Lead
+    const float _LERP = 0.125f; // how fast does the camera lerp towards Lead
     const float _HIGH_ANGLE = 50f; // what's our highest angle that the camera cant rotate past
     const float _LOW_ANGLE = 115f; // what's our lowest angle that the camera cant rotate past
     const float _CORRECTION = 0.1f; // if we're at the angle max, how much do we correct the camera's y by?
@@ -122,7 +122,7 @@ public class TwoCameraScript : CameraScript
         {
             // exact opposite of above
             // however, strength of lerp intensifies based on distance away
-            _lead.position = Vector3.Lerp(t_pos, cache_pos - _lead.forward * _DISTANCE, _MDIST_LERP * Mathf.Clamp(dist, 0f, 40f));
+            _lead.position = Vector3.Lerp(t_pos, cache_pos - _lead.forward * _DISTANCE, _MDIST_LERP); //* Mathf.Clamp(dist, 0f, 40f));
         }
 
         _lead.LookAt(GetAdjustedPosition()); // orient LEAD
@@ -147,8 +147,13 @@ public class TwoCameraScript : CameraScript
 
         prior_pos = g.transform.position;
     }
-    
+
     protected override void Update()
+    {
+        // pass
+    }
+
+    void LateUpdate() // changed from Update bc of camera snapping
     {
 
         MaintainDistance(); // could lighten the calls to this by hooking it into an OnMoved/OnCameraMoved event but whatevs

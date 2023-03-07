@@ -43,38 +43,17 @@ public class DitherShaderScript : MonoBehaviour
         int width = source.width;
         int height = source.height;
 
-        // RenderTexture[] textures = new RenderTexture[8];
 
         RenderTexture currentSource = source;
 
-        /*
-        for (int i = 0; i < downSamples; ++i)
-        {
-            width /= 2;
-            height /= 2;
-
-            if (height < 2)
-                break;
-
-            RenderTexture currentDestination = textures[i] = RenderTexture.GetTemporary(width, height, 0, source.format);
-
-            Graphics.Blit(currentSource, currentDestination, ditherMat, 1);
-
-            currentSource = currentDestination;
-        }*/
-
-        // Graphics.Blit(source, destination, ditherMat, 0);
-        RenderTexture dither = RenderTexture.GetTemporary(width / downSamples, height / downSamples, 0, source.format);
+        RenderTexture dither = RenderTexture.GetTemporary(
+            (width / downSamples),
+            (height / downSamples), 0, source.format);
         Graphics.Blit(currentSource, dither, ditherMat, 0);
 
         Graphics.Blit(dither, destination, ditherMat, 1);
         RenderTexture.ReleaseTemporary(dither);
+        
 
-        /*
-        for (int i = 0; i < downSamples; ++i)
-        {
-            RenderTexture.ReleaseTemporary(textures[i]);
-        }
-        */
     }
 }

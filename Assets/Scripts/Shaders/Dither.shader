@@ -78,14 +78,10 @@ Shader "Hidden/Dither" {
 
             fixed4 fp(v2f i) : SV_Target {
             
-                float4 col = _MainTex.Sample(point_clamp_sampler, i.uv);
+                float4 col = _MainTex.Sample(point_clamp_sampler, i.uv); // point_clamp_sampler
 
-                //float2 pixelScaling = 512 * float2(1, 9.0f/16.0f); // 360 is pixel density
-                                                             // 16 by 9 ratio
-                //i.uv = round(i.uv * pixelScaling)/ pixelScaling;
-
-                int x = i.uv.x * _MainTex_TexelSize.z; // width
-                int y = i.uv.y * _MainTex_TexelSize.w; // height
+                int x = round(i.uv.x * _MainTex_TexelSize.z) + 0.5;  // width  
+                int y = round(i.uv.y * _MainTex_TexelSize.w) + 0.5;  // height
 
                 float4 output = col + _Spread * GetBayer4(float2(x,y));
 
@@ -102,7 +98,11 @@ Shader "Hidden/Dither" {
                 // the MainText TexelSize.z/.w multiplied by the uv produces some weird integers that might
                 // or might not fuck stuff up considering this algo relies on exact ints.
                 // how to solve this, idk. i need to make the numbers match a 16:9 ratio.
-                
+                //
+                // ok i think this occurs because point sampling combined with division downscaling
+                // leads to the 16/9 ratio getting slightly off, which leads to random pixel discoloration.
+
+
                 return output;
             }
             ENDCG
