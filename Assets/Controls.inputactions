@@ -9,7 +9,7 @@
                     "name": "Lateral",
                     "type": "Value",
                     "id": "cd83313f-65f2-48d5-a937-407e87a42656",
-                    "expectedControlType": "Vector2",
+                    "expectedControlType": "Stick",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -33,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Back",
+                    "name": "Sprint",
                     "type": "Button",
                     "id": "d62c871d-9816-4b45-be63-b3fa33008aa7",
                     "expectedControlType": "Button",
@@ -185,11 +185,11 @@
                 {
                     "name": "",
                     "id": "249afe2b-4231-4965-a33d-8ffed29e5dbb",
-                    "path": "<Keyboard>/k",
+                    "path": "<Keyboard>/leftShift",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Back",
+                    "action": "Sprint",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
