@@ -40,16 +40,13 @@ public abstract class CameraScript : PossessableObject
     #endregion
 
     // declaring abstracts
-    // This function will contain implementation to define how the camera should move to maintain its distance
-    protected abstract void MaintainDistance();
+
     // Sets the focus to input, but also can do other things (such as lerp to the new focus)
     protected abstract void SetFocusTarget(Transform t);
     // bruh
     protected abstract void OnMouseDelta(InputAction.CallbackContext context);
     // bruh
     protected abstract void OnMouseClick(InputAction.CallbackContext context);
-    // currently unused, but applies a visual effect to the camera
-    protected abstract void AnimateCamera();
 
     protected abstract void Start();
 
