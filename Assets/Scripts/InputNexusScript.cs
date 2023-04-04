@@ -119,9 +119,6 @@ public class InputNexusScript : MonoBehaviour
     /// if this function does get called, that means that nothing is listening
     /// to the input, which is bad. OnEmptyBind calls a special invoke that
     /// is never emptied until the end of the program.
-    ///
-    /// FIX THIS, RIGHT NOW IF MULTIPLE THINGS ARE HOOKED INTO EMPTYBIND THEY
-    /// CAUSE A MEMORY LEAK BC THEY GET ADDED OVER AND OVER
     /// </summary>
     public void OnEmptyBind()
     {

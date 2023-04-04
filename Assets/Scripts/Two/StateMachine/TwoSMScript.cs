@@ -10,7 +10,8 @@ public enum TwoState
     Move,
     Rising,
     Falling,
-    Running
+    Running,
+    Stance
 }
 
 // StateMachine for Two
@@ -27,9 +28,12 @@ public class TwoSMScript : PossessableObject
 
     void Awake()
     {
+        GameObject spear = GameObject.FindGameObjectWithTag("TwoSpear");
+
         CharacterController c = GetComponent<CharacterController>();
         TwoCameraScript tcs = Camera.main.GetComponent<TwoCameraScript>();
         CharacterControllerForceScript ccfs = GetComponent<CharacterControllerForceScript>();
+        SpearControlBehavior scb = spear.GetComponent<SpearControlBehavior>();
 
         // use a HashMap to store all the states so I can avoid an icky Factory Pattern
         // seriously what is so great about those, I don't get it.
@@ -42,6 +46,7 @@ public class TwoSMScript : PossessableObject
         map.Add(TwoState.Falling, new TSFalling(c, tcs.transform, ChangeStateFunc, ccfs.AddImpact));
         map.Add(TwoState.Rising, new TSRising(c, tcs.transform, ChangeStateFunc, ccfs.AddImpact));
         map.Add(TwoState.Running, new TSRun(c, tcs.transform, ChangeStateFunc));
+        map.Add(TwoState.Stance, new TSStance(c, tcs.transform, ChangeStateFunc, scb));
 
         // Initial value is Idle, because obviously.
         current_state = map[TwoState.Idle];
@@ -115,13 +120,16 @@ public class TwoSMScript : PossessableObject
         current_state.HandleButton2(context);
     }
 
-    // do i even need to have this?
-    // it might be nice to have an extra button for something
-    // maybe the UI will hook into the same UnityEvent that calls this key?
     private void WithBackButton(InputAction.CallbackContext context)
     {
         current_state.HandleButton3(context);
     }
+
+    private void WithExtraButton(InputAction.CallbackContext context)
+    {
+        current_state.HandleStanceInput(context);
+    }
+
     #endregion
 
     #region Input Nexus Hooks
@@ -131,6 +139,7 @@ public class TwoSMScript : PossessableObject
         INS.ButtonBind -= WithButton;
         INS.UseBind -= WithUseButton;
         INS.BackBind -= WithBackButton;
+        INS.ExtraBind -= WithExtraButton;
     }
 
     protected override void FreePersistentHook()
@@ -144,6 +153,7 @@ public class TwoSMScript : PossessableObject
         INS.ButtonBind += WithButton;
         INS.UseBind += WithUseButton;
         INS.BackBind += WithBackButton;
+        INS.ExtraBind += WithExtraButton;
     }
 
     protected override void PersistentHook()
@@ -292,6 +302,13 @@ public abstract class TwoBaseState
                 Quaternion.LookRotation(v),
                 _ROTATION_LERP * Time.deltaTime);
         }
+    }
+
+    // I'm defining this here because only one state needs this.
+    // Every other state overrides this to //pass
+    public virtual void HandleStanceInput(InputAction.CallbackContext c)
+    {
+        // pass
     }
 
     // Abstracts

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - InputNexus
   - MovingObject
+  - TwoSpear
   layers:
   - Default
   - TransparentFX
