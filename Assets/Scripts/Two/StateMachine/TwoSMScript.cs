@@ -304,11 +304,12 @@ public abstract class TwoBaseState
         }
     }
 
-    // I'm defining this here because only one state needs this.
-    // Every other state overrides this to //pass
     public virtual void HandleStanceInput(InputAction.CallbackContext c)
     {
-        // pass
+        if (c.started)
+        {
+            ChangeState(TwoState.Stance);
+        }
     }
 
     // Abstracts

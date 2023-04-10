@@ -43,6 +43,24 @@ public class SpearControlBehavior : MonoBehaviour
         SPEAR.position += Mathf.Sin(Time.time * ANIMATION_SPEED * 0.1f) * Time.deltaTime * Vector3.up;
     }
 
+    public void ToggleStance(bool value)
+    {
+        in_stance = value;
+    }
+
+    public void DoBehaviorWithValue(float value)
+    {
+        if (value < 0)
+        {
+            Debug.Log("Spin");
+        }
+
+        else
+        {
+            Debug.Log("Burst");
+        }
+    }
+
     void LerpToTarget(Vector3 target, float target_offset)
     {
         float accuracy = LERP_ACCURACY + target_offset;

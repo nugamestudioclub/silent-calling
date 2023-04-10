@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
 
 /// <summary>
-/// Union class for Rising, Falling, and Walljump since they share many things
+/// Union class for Rising, Falling, and Walljump (eventually) since they share many things
 /// </summary>
 public abstract class TSBaseAirborneState : TwoBaseState
 {
@@ -56,6 +54,12 @@ public abstract class TSBaseAirborneState : TwoBaseState
             _running = false;
         }
     }
+
+    public override void HandleStanceInput(InputAction.CallbackContext c)
+    {
+        // pass
+    }
+
     public override void UpdateState(TwoBaseState b)
     {
         base.UpdateState(b);

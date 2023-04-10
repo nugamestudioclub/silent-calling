@@ -11,10 +11,23 @@ public class TSStance : TwoBaseState
         this.spearControlBehavior = spearControlBehavior;
     }
 
+    public override void UpdateState(TwoBaseState b)
+    {
+        // not important because we dont move.
+        // base.UpdateState(b);
+
+        spearControlBehavior.ToggleStance(true);
+    }
+
     public override void HandleStanceInput(InputAction.CallbackContext c)
     {
         // q = spear spin
         // e = burst
+
+        if (c.started)
+        {
+            spearControlBehavior.DoBehaviorWithValue(c.ReadValue<float>());
+        }
     }
 
     public override void Handle2DMovement(InputAction.CallbackContext c)
@@ -24,6 +37,8 @@ public class TSStance : TwoBaseState
 
     void ExitToIdle()
     {
+        spearControlBehavior.ToggleStance(false);
+
         ChangeState(TwoState.Idle);
     }
 
