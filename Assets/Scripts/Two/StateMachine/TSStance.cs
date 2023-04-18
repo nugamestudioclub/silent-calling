@@ -9,6 +9,7 @@ public class TSStance : TwoBaseState
     public TSStance(CharacterController c, Transform cam, Action<TwoState> a, SpearControlBehavior spearControlBehavior) : base(c, cam, a) 
     {
         this.spearControlBehavior = spearControlBehavior;
+        this.StateType = TwoState.Stance;
     }
 
     public override void UpdateState(TwoBaseState b)

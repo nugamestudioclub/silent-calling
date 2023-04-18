@@ -1,10 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System;
 
 public class StanceCamera : ACameraState
 {
+    public StanceCamera(Action<TwoState> f) : base(f) { }
+
     public override void CameraFocusTarget(Transform t)
     {
         // not sure what to put here.
@@ -27,7 +28,7 @@ public class StanceCamera : ACameraState
 
     public override void StateStart()
     {
-        // pass
+        Debug.Log("In Stance");
     }
 
     public override void StateUpdate()

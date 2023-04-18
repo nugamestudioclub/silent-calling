@@ -167,7 +167,7 @@ public class TwoSMScript : PossessableObject
 // naming convention:
 // TS(State Name), stands for Two State (state name)
 // e.g. TSIdle, TSMove, TSAirborne
-// Two's base State for his StateMachine. This is a template class.
+// Two's base State for her StateMachine. This is a template class.
 public abstract class TwoBaseState
 {
     protected const float _GRAVITY = -9.81f; // bruh

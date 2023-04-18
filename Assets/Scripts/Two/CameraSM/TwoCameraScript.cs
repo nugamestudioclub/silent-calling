@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 /// <summary>
 /// The big idea with this script is that the camera isn't directly controlled by MouseDelta. Rather, the position of a gameobject
@@ -11,13 +12,49 @@ public class TwoCameraScript : CameraScript
 {
     ACameraState currentState;
 
+    Dictionary<TwoState, ACameraState> map;
+
+    TwoSMScript tsm;
+
     protected override void Start()
     {
         Cursor.lockState = CursorLockMode.Locked; // lock cursor, basic camera stuff
 
+        map = new Dictionary<TwoState, ACameraState>();
+
+        tsm = GameObject
+            .FindGameObjectWithTag("Player")
+            .GetComponent<TwoSMScript>();
+
+        ACameraState bs = new BasicCamera(ChangeState);
+        tsm.OnStateChanged += bs.ChangeCameraState;
+
+        ACameraState sc = new StanceCamera(ChangeState);
+        tsm.OnStateChanged += sc.ChangeCameraState;
+
+        map.Add(TwoState.Idle, bs);
+        map.Add(TwoState.Move, bs);
+        map.Add(TwoState.Stance, sc);
+
         PersistentHook();
 
-        currentState = new BasicCamera();
+        currentState = map[TwoState.Idle];
+        currentState.StateStart();
+    }
+
+    private void OnDisable()
+    {
+        ACameraState bs = map[TwoState.Idle];
+        tsm.OnStateChanged -= bs.ChangeCameraState;
+
+        ACameraState sc = map[TwoState.Stance];
+        tsm.OnStateChanged -= sc.ChangeCameraState;
+    }
+
+    public void ChangeState(TwoState state)
+    {
+        currentState = map[state];
+
         currentState.StateStart();
     }
 

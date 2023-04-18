@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -23,8 +22,10 @@ public class BasicCamera : ACameraState
     protected const float _MDIST_LERP = 0.0125f; // how much the Lead lerps to obey distance
     protected readonly float _SENSITIVITY = 20f; // brub
                                                                   // protected ??? _cameraState = ???;
-
     Vector3 prior_pos = Vector3.zero;
+
+
+    public BasicCamera(Action<TwoState> f) : base(f) { }
 
     protected Vector3 GetAdjustedPosition(Transform focusTarget)
     {
@@ -77,6 +78,14 @@ public class BasicCamera : ACameraState
         }
     }
 
+    // Returns the adjusted focusTarget position with character height added. This makes the
+    // camera not focus on Two's feet :>
+    // might also cause bugs? kinda hard to tell.
+    Vector3 GetAdjustedPosition()
+    {
+        return _focusTarget.position + Vector3.up * _CHARACTER_HEIGHT;
+    }
+
     // idk if this even needs to be a thing i can override
     // maybe add a lerp in here?
     public override void CameraFocusTarget(Transform t)
@@ -88,14 +97,6 @@ public class BasicCamera : ACameraState
         _priorTarget = cache;
 
         transform.LookAt(_focusTarget);
-    }
-
-    // Returns the adjusted focusTarget position with character height added. This makes the
-    // camera not focus on Two's feet :>
-    // might also cause bugs? kinda hard to tell.
-    Vector3 GetAdjustedPosition()
-    {
-        return _focusTarget.position + Vector3.up * _CHARACTER_HEIGHT;
     }
 
     // Here it is- the big one.
