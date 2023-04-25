@@ -4,11 +4,22 @@ using System;
 
 public class StanceCamera : ACameraState
 {
-    public StanceCamera(Action<TwoState> f) : base(f) { }
+    SpearControlBehavior spear;
+    Transform player;
+    Transform _focusTarget;
+    Transform this_camera;
+
+    public StanceCamera(Action<TwoState> f) : base(f)
+    {
+        GameObject spr = GameObject.FindGameObjectWithTag("TwoSpear");
+        spear = spr.GetComponent<SpearControlBehavior>();
+        this_camera = Camera.main.transform;
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+    }
 
     public override void CameraFocusTarget(Transform t)
     {
-        // not sure what to put here.
+        _focusTarget = t;
     }
 
     public override void CameraMouseClicked(InputAction.CallbackContext context)
@@ -18,7 +29,13 @@ public class StanceCamera : ACameraState
 
     public override void CameraMouseDelta(InputAction.CallbackContext context)
     {
-        // rotate camera accordingly, spear will follow
+        if (context.performed)
+        {
+            Vector2 delta = context.ReadValue<Vector2>();
+
+            this_camera.RotateAround(player.position, Vector3.up, delta.x);
+            this_camera.RotateAround(this_camera.position, this_camera.right, -delta.y);
+        }
     }
 
     public override void StateLateUpdate()
@@ -28,7 +45,8 @@ public class StanceCamera : ACameraState
 
     public override void StateStart()
     {
-        Debug.Log("In Stance");
+        this_camera.position = player.position + player.forward + Vector3.up * 2f;
+        CameraFocusTarget(spear.gameObject.transform);
     }
 
     public override void StateUpdate()

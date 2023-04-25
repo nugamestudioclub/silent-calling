@@ -25,7 +25,23 @@ public class BasicCamera : ACameraState
     Vector3 prior_pos = Vector3.zero;
 
 
-    public BasicCamera(Action<TwoState> f) : base(f) { }
+    public BasicCamera(Action<TwoState> f) : base(f)
+    {
+        transform = Camera.main.transform;
+
+        GameObject g = GameObject.FindGameObjectWithTag("Player");
+
+        CameraFocusTarget(g.transform); // setting the initial focus
+
+        // creation of LEAD object
+        GameObject g2 = new GameObject();
+
+        g2.name = "Camera Lead";
+        _lead = g2.transform;
+        _lead.SetPositionAndRotation(transform.position, transform.rotation);
+
+        prior_pos = g.transform.position;
+    }
 
     protected Vector3 GetAdjustedPosition(Transform focusTarget)
     {
@@ -139,20 +155,7 @@ public class BasicCamera : ACameraState
 
     public override void StateStart()
     {
-        transform = Camera.main.transform;
-
-        GameObject g = GameObject.FindGameObjectWithTag("Player");
-
-        CameraFocusTarget(g.transform); // setting the initial focus
-
-        // creation of LEAD object
-        GameObject g2 = new GameObject();
-
-        g2.name = "Camera Lead";
-        _lead = g2.transform;
-        _lead.SetPositionAndRotation(transform.position, transform.rotation);
-
-        prior_pos = g.transform.position;
+        // pass
     }
 
     public override void StateUpdate()

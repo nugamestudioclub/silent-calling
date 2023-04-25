@@ -33,7 +33,7 @@ public class TSStance : TwoBaseState
 
     public override void Handle2DMovement(InputAction.CallbackContext c)
     {
-        // move spear
+        _currentInput = c.ReadValue<Vector2>();
     }
 
     void ExitToIdle()
@@ -70,7 +70,9 @@ public class TSStance : TwoBaseState
     #region Unimportant Overrides
     public override void PhysicsProcess()
     {
-        // pass
+
+        spearControlBehavior.MoveSpear(_currentInput * Time.deltaTime);
+
         // i might need this to be defined in the case you get shoved off of a thing in stance, but eh
     }
 

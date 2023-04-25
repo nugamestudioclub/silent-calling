@@ -31,7 +31,7 @@ public class TwoCameraScript : CameraScript
 
         ACameraState sc = new StanceCamera(ChangeState);
         tsm.OnStateChanged += sc.ChangeCameraState;
-
+        
         map.Add(TwoState.Idle, bs);
         map.Add(TwoState.Move, bs);
         map.Add(TwoState.Stance, sc);
@@ -53,6 +53,13 @@ public class TwoCameraScript : CameraScript
 
     public void ChangeState(TwoState state)
     {
+        if (state != TwoState.Idle
+            && state != TwoState.Move
+            && state != TwoState.Stance)
+        {
+            return;
+        }
+
         currentState = map[state];
 
         currentState.StateStart();

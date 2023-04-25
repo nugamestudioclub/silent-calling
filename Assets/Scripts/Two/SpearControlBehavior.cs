@@ -11,6 +11,8 @@ public class SpearControlBehavior : MonoBehaviour
     Transform main_camera;
     Transform player;
 
+    float distance_from_camera;
+
     bool in_stance = false;
 
     private void Start()
@@ -31,7 +33,7 @@ public class SpearControlBehavior : MonoBehaviour
     {
         if (in_stance)
         {
-            LerpToTarget(main_camera.position, 0f); // TODO this will have to be more complicated
+            LerpToTarget(GetPositionFromCamera() - Vector3.up, 0f); // TODO this will have to be more complicated
         } 
 
         else
@@ -61,14 +63,24 @@ public class SpearControlBehavior : MonoBehaviour
         }
     }
 
+    public void MoveSpear(Vector2 delta)
+    {
+        distance_from_camera = Mathf.Clamp(distance_from_camera + delta.y * 10f, 2f, MAX_RANGE_FROM_CAMERA);
+    }
+
     void LerpToTarget(Vector3 target, float target_offset)
     {
         float accuracy = LERP_ACCURACY + target_offset;
 
         if ((target - transform.position).sqrMagnitude > (accuracy * accuracy))
         {
-            transform.position = Vector3.Lerp(transform.position, target, LERP_SPEED * Time.deltaTime);
+            transform.position = Vector3.Slerp(transform.position, target, LERP_SPEED * Time.deltaTime);
         }
+    }
+
+    Vector3 GetPositionFromCamera()
+    {
+        return player.position + main_camera.forward * distance_from_camera;
     }
 
 }
