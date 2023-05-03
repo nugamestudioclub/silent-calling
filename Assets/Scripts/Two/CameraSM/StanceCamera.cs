@@ -5,15 +5,20 @@ using System;
 public class StanceCamera : ACameraState
 {
     SpearControlBehavior spear;
+    Transform transform;
+
     Transform player;
     Transform _focusTarget;
-    Transform this_camera;
+
+    float angle;
+
+    const float _SENSITIVITY = 15f;
 
     public StanceCamera(Action<TwoState> f) : base(f)
     {
         GameObject spr = GameObject.FindGameObjectWithTag("TwoSpear");
         spear = spr.GetComponent<SpearControlBehavior>();
-        this_camera = Camera.main.transform;
+        transform = Camera.main.transform;
         player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
@@ -31,12 +36,23 @@ public class StanceCamera : ACameraState
     {
         if (context.performed)
         {
+            float multiplier = _SENSITIVITY * Time.deltaTime;
+
             Vector2 delta = context.ReadValue<Vector2>();
 
-            this_camera.RotateAround(player.position, Vector3.up, delta.x);
-            this_camera.RotateAround(this_camera.position, this_camera.right, -delta.y);
+            transform.RotateAround(player.position, Vector3.up, delta.x * multiplier);
+
+            angle = Mathf.Clamp(angle - delta.y * multiplier, -70f, 70f);
+
+            if (Mathf.Abs(angle) < 70f)
+            {
+                transform.RotateAround(transform.position, transform.right, -delta.y * multiplier);
+            }
+
+            // spear.HandleLineOfSight();
         }
     }
+
 
     public override void StateLateUpdate()
     {
@@ -45,8 +61,10 @@ public class StanceCamera : ACameraState
 
     public override void StateStart()
     {
-        this_camera.position = player.position + player.forward + Vector3.up * 2f;
+        transform.position = player.position + player.forward + Vector3.up * 2f;
         CameraFocusTarget(spear.gameObject.transform);
+
+        angle = 0f;
     }
 
     public override void StateUpdate()
@@ -61,6 +79,6 @@ public class StanceCamera : ACameraState
 
     protected override void CameraMaintainDistance()
     {
-        // rotate around Two's shoulder area.
+        // pass
     }
 }

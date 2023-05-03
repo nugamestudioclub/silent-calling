@@ -5,24 +5,22 @@ using UnityEngine.InputSystem;
 public class BasicCamera : ACameraState
 {
     Transform transform; // the camera's transform
+    Transform _lead; // reference to the Lead's transform for calculations and lerps
+    Transform _focusTarget, _priorTarget; // who the camera is focusing on, who we were focusing on
 
-    Transform _lead;
     const float _LERP = 0.125f; // how fast does the camera lerp towards Lead
     const float _HIGH_ANGLE = 50f; // what's our highest angle that the camera cant rotate past
     const float _LOW_ANGLE = 115f; // what's our lowest angle that the camera cant rotate past
     const float _CORRECTION = 0.1f; // if we're at the angle max, how much do we correct the camera's y by?
     const float _CHARACTER_HEIGHT = 2.3f; // not a great solution, but it works. // + Vector3.up * _CHARACTER_HEIGHT
+    const float _DISTANCE = 10f; // how far should the camera be from the focus?
+    const float _MDIST_LERP = 0.0125f; // how much the Lead lerps to obey distance
+    const float _SENSITIVITY = 20f; // brub
 
     const int _LAYER_MASK = ~(1 << 2); // look this up if you wanna know what this does :P
 
-    protected RaycastHit _info; // raycast information about the ray from focus to camera
-
-    protected Transform _focusTarget, _priorTarget; // who the camera is focusing on
-    protected const float _DISTANCE = 10f; // how far should the camera be from the focus?
-    protected const float _MDIST_LERP = 0.0125f; // how much the Lead lerps to obey distance
-    protected readonly float _SENSITIVITY = 20f; // brub
-                                                                  // protected ??? _cameraState = ???;
-    Vector3 prior_pos = Vector3.zero;
+    RaycastHit _info; // raycast information about the ray from focus to camera
+    Vector3 prior_pos = Vector3.zero; // prior position of the player, used to align the lead properly when moving
 
 
     public BasicCamera(Action<TwoState> f) : base(f)
