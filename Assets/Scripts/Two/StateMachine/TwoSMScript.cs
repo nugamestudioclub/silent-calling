@@ -52,11 +52,6 @@ public class TwoSMScript : PossessableObject
         current_state = map[TwoState.Idle];
     }
 
-    private void Start()
-    {
-        PersistentHook();
-    }
-
     /// <summary>
     /// Takes in a TwoState enum and changes the state to that State.
     /// Fires the OnStateChanged event and Updates + Starts the next state.
@@ -135,16 +130,23 @@ public class TwoSMScript : PossessableObject
     #region Input Nexus Hooks
     protected override void Free()
     {
+
+        #if UNITY_EDITOR
+        if (INS == null)
+        {
+            Debug.LogWarning("If you see this message when not exiting playmode, then you are missing an INS!");
+
+            return;
+        }
+
+        Debug.Log(string.Format("Links for {0} were decoupled w/o race condition error.", name));
+        #endif
+
         INS.LateralBind -= WithInputVector;
         INS.ButtonBind -= WithButton;
         INS.UseBind -= WithUseButton;
         INS.BackBind -= WithBackButton;
         INS.ExtraBind -= WithExtraButton;
-    }
-
-    protected override void FreePersistentHook()
-    {
-        INS.EmptyBind -= Hook;
     }
 
     protected override void Hook()
@@ -154,11 +156,6 @@ public class TwoSMScript : PossessableObject
         INS.UseBind += WithUseButton;
         INS.BackBind += WithBackButton;
         INS.ExtraBind += WithExtraButton;
-    }
-
-    protected override void PersistentHook()
-    {
-        INS.EmptyBind += Hook;
     }
 
     #endregion

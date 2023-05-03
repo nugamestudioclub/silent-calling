@@ -36,14 +36,25 @@ public class TwoCameraScript : CameraScript
         map.Add(TwoState.Move, bs);
         map.Add(TwoState.Stance, sc);
 
-        PersistentHook();
-
         currentState = map[TwoState.Idle];
         currentState.StateStart();
     }
-
-    private void OnDisable()
+    
+    protected override void OnDisable()
     {
+        #if UNITY_EDITOR
+        if (INS == null)
+        {
+            Debug.LogWarning("If you see this message when not exiting playmode, then you are missing an INS!");
+
+            return;
+        }
+
+        Debug.Log(string.Format("Links for {0} were decoupled w/o race condition error.", name));
+        #endif
+
+        Free();
+
         ACameraState bs = map[TwoState.Idle];
         tsm.OnStateChanged -= bs.ChangeCameraState;
 

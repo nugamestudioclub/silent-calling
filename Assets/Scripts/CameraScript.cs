@@ -15,28 +15,20 @@ public abstract class CameraScript : PossessableObject
                                                                    // protected ??? _cameraState = ???;
 
     #region Basic Hooks
+
     protected override void Free()
     {
+        Debug.Log("free: " + this.name);
         INS.MouseClickBind -= OnMouseClick;
         INS.MouseDeltaBind -= OnMouseDelta;
     }
 
-    protected override void FreePersistentHook()
-    {
-        INS.EmptyBind -= Hook;
-    }
-
     protected override void Hook()
     {
+        Debug.Log("hook: " + this.name);
         INS.MouseClickBind += OnMouseClick;
         INS.MouseDeltaBind += OnMouseDelta;
     }
-
-    protected override void PersistentHook()
-    {
-        INS.EmptyBind += Hook;
-    }
-
     #endregion
 
     // declaring abstracts
