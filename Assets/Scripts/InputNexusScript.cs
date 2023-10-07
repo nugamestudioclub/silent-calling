@@ -14,7 +14,7 @@ public class InputNexusScript : MonoBehaviour
 
     // instance of delegate declarations
     // these are made into Events so that other classes cannot reset their values.
-    public event InputSystemDelegate LateralBind, ButtonBind, UseBind, BackBind, MouseDeltaBind, MouseClickBind;
+    public event InputSystemDelegate LateralBind, ButtonBind, UseBind, BackBind, MouseDeltaBind, MouseClickBind, ExtraBind;
     public event EmptyBindDelegate EmptyBind;
 
     #region Input Component Hooks
@@ -59,7 +59,7 @@ public class InputNexusScript : MonoBehaviour
         OnEmptyBind();
     }
 
-    // Called upon a Button input (K)
+    // Called upon a Button input (Shift)
     public void OnBackBind(InputAction.CallbackContext context)
     {
         if (BackBind != null)
@@ -88,7 +88,7 @@ public class InputNexusScript : MonoBehaviour
     // Called upon left mouse click.
     public void OnMouseClickBind(InputAction.CallbackContext context)
     {
-        if (BackBind != null)
+        if (MouseClickBind != null)
         {
             MouseClickBind.Invoke(context);
 
@@ -97,6 +97,20 @@ public class InputNexusScript : MonoBehaviour
 
         OnEmptyBind();
     }
+
+    // Called upon Q andor E pressed
+    public void OnOneDimensionBind(InputAction.CallbackContext context)
+    {
+        if (ExtraBind != null)
+        {
+            ExtraBind.Invoke(context);
+
+            return;
+        }
+
+        // OnEmptyBind(); not needed because most inputs don't use these keys
+    }
+
     #endregion
 
     /// <summary>
@@ -111,20 +125,20 @@ public class InputNexusScript : MonoBehaviour
     /// </summary>
     public void OnEmptyBind()
     {
-        LateralBind = ButtonBind = UseBind = BackBind = MouseDeltaBind = MouseClickBind = null;
+        LateralBind = ButtonBind = UseBind = BackBind = MouseDeltaBind = MouseClickBind = ExtraBind = null;
 
         // this exists to let me know if the bind is empty
 #if UNITY_EDITOR
         if (EmptyBind != null)
         {
-            Debug.Log("Invoking EMPTYBIND.");
+            Debug.Log("Invoking emptybind.");
 
             EmptyBind.Invoke();
 
             return;
         }
 
-        Debug.Log("EMPTYBIND IS EMPTY!");
+        Debug.Log("EMPTYBIND IS EMPTY! fix it.");
 #endif
 
         EmptyBind.Invoke();
