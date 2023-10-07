@@ -8,71 +8,28 @@
                 {
                     "name": "Lateral",
                     "type": "Value",
-                    "id": "cd83313f-65f2-48d5-a937-407e87a42656",
-                    "expectedControlType": "Stick",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "Button",
-                    "type": "Button",
-                    "id": "2c1ba7ca-fe5a-4409-9543-78b66b5a49d5",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Use",
-                    "type": "Button",
-                    "id": "e0a74fe7-8413-4cee-94eb-666322030dd8",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Sprint",
-                    "type": "Button",
-                    "id": "d62c871d-9816-4b45-be63-b3fa33008aa7",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Mouse",
-                    "type": "Value",
-                    "id": "346977ce-ca79-4140-9685-da1027cab2c9",
+                    "id": "7f4c8c97-88e0-4d5b-8950-c87f9cf3bb2c",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
-                },
-                {
-                    "name": "MouseClick",
-                    "type": "Button",
-                    "id": "1f5de724-913b-4cab-8e06-a33925ed22c4",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "ExtraBind",
-                    "type": "Button",
-                    "id": "a5e1c666-52fa-4030-8d0a-d1595fcadc0d",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
                 {
-                    "name": "2D Vector",
-                    "id": "c76463dd-753c-4a34-b84e-1e84085f098e",
+                    "name": "",
+                    "id": "bef4e9ed-dcdf-42be-b83c-cdf577222617",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Lateral",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Keyboard",
+                    "id": "841bddcc-2542-459e-85bd-7d475aba666c",
                     "path": "2DVector",
                     "interactions": "",
                     "processors": "",
@@ -83,7 +40,7 @@
                 },
                 {
                     "name": "up",
-                    "id": "e0373a8d-6ad5-49f6-afa9-27c3b508a784",
+                    "id": "6fc25274-f582-4950-9069-77cdc515fe13",
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
@@ -93,19 +50,8 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "up",
-                    "id": "56abd526-28a5-48eb-acf0-677d3459074d",
-                    "path": "<Joystick>/stick/up",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Lateral",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
                     "name": "down",
-                    "id": "21ca574b-eb7b-4af5-ab87-d8c07a0c603a",
+                    "id": "d46aa230-c663-4780-abc4-2d4c6eb32edf",
                     "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
@@ -115,19 +61,8 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "down",
-                    "id": "3f0ac566-7067-4286-8418-95e92fd3fae9",
-                    "path": "<Joystick>/stick/down",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Lateral",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
                     "name": "left",
-                    "id": "03cb192d-a0e1-4a44-a426-8c582c0d687a",
+                    "id": "c8258633-cbc4-454f-ad00-074bd4ed169e",
                     "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
@@ -137,123 +72,13 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "left",
-                    "id": "84c3229a-68ed-47de-b4e3-8ff017097a5e",
-                    "path": "<Joystick>/stick/left",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Lateral",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
                     "name": "right",
-                    "id": "da8c3c69-4685-4607-9307-e7e52d5d0866",
+                    "id": "02372191-3abe-4f12-9d33-e431344bd221",
                     "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Lateral",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "24cd17f5-b192-48fb-b4a7-afc8de4ff685",
-                    "path": "<Joystick>/stick/right",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Lateral",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "796bd456-39d8-4fe4-ab38-3a7b9e543cdc",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Button",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "96d8dd92-0db5-46cc-81da-1d5f20b368a5",
-                    "path": "<Keyboard>/j",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Use",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "249afe2b-4231-4965-a33d-8ffed29e5dbb",
-                    "path": "<Keyboard>/leftShift",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Sprint",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "8001488b-5a6f-4968-be9f-892cc9e31f23",
-                    "path": "<Mouse>/delta",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Mouse",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "3f954925-e012-4fdb-893b-385429f92229",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "MouseClick",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "1D Axis",
-                    "id": "acab9658-2532-4e0f-86b7-727c3a1fe40d",
-                    "path": "1DAxis",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ExtraBind",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "negative",
-                    "id": "68833778-e827-4595-aadb-3022573e1aee",
-                    "path": "<Keyboard>/q",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ExtraBind",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "f019410f-ca05-48be-973e-e0694f0dfb0f",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ExtraBind",
                     "isComposite": false,
                     "isPartOfComposite": true
                 }
